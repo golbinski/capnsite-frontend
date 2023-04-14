@@ -1,23 +1,39 @@
 <template>
   <div>
     <h2 v-if="node">{{ node.label }} Properties:</h2>
-    <ul v-if="node && node.properties">
-      <li v-for="(value, key) in node.properties" :key="key">
-        <strong>{{ key }}:</strong> {{ value }}
-      </li>
-    </ul>
+    <table v-if="node && node.properties">
+      <thead>
+        <tr>
+          <th v-for="key in Object.keys(node.properties)" :key="key">{{ key }}</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td v-for="value in Object.values(node.properties)" :key="value">{{ value }}</td>
+        </tr>
+      </tbody>
+    </table>
     <div v-if="!node">No node selected</div>
   </div>
 </template>
 
 <script>
+
+import { inject } from 'vue';
+
 export default {
   name: 'PropertyEditor',
-  props: {
-    node: {
-      type: Object,
-      default: null
-    }
+  data() {
+    return {
+      node: null
+    };
+  },
+  inject: ['bus'],
+  mounted() {
+    const eventBus = inject('bus');
+    eventBus.on('view-properties', property => {
+      this.node = property;
+    });
   }
 };
 </script>

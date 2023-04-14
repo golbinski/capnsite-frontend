@@ -10,7 +10,7 @@
         </div>
       </div>
       <div v-else class="property">
-        <span class="property-label" @click="onPropertyClick">
+        <span class="property-label" @click="onPropertyClick(node)">
           {{ node.label }}
         </span>
       </div>
@@ -19,6 +19,7 @@
 </template>
 
 <script>
+
 export default {
   name: 'PropertyTree',
   props: {
@@ -27,12 +28,13 @@ export default {
       required: true
     }
   },
+  inject: ['bus'],
   methods: {
     onSectionClick(node) {
       node.expanded = !node.expanded;
     },
     onPropertyClick(node) {
-      this.$emit('viewProperties', node);
+      this.bus.emit('view-properties', node);
     },
     onSectionDoubleClick(node) {
       this.expandRecursive(node, true);

@@ -1,11 +1,13 @@
 <template>
   <div>
     <h1>Tree Structure</h1>
-    <div class="property-tree-pane">
-      <PropertyTree :nodes="treeData" />
-    </div>
-    <div class="properties-pane">
-      <PropertyEditor :node="propertiesNode" @viewProperties="onViewProperties($event)" />
+    <div class="app-container">
+      <div class="property-tree-pane">
+        <PropertyTree :nodes="treeData" />
+      </div>
+      <div class="properties-pane">
+        <PropertyEditor />
+      </div>
     </div>
   </div>
 </template>
@@ -15,6 +17,16 @@
 
 import PropertyTree from '@/components/PropertyTree.vue';
 import PropertyEditor from '@/components/PropertyEditor.vue';
+import mitt from 'mitt';
+
+function createEventBus() {
+  const emitter = mitt();
+  return {
+    emit: emitter.emit,
+    on: emitter.on,
+    off: emitter.off,
+  };
+}
 
 export default {
   name: 'CapnSite',
@@ -22,10 +34,8 @@ export default {
     PropertyTree,
     PropertyEditor
   },
-  methods: {
-    onViewProperties(node) {
-      this.propertiesNode = node;
-    }
+  provide: {
+    bus: createEventBus()
   },
   data() {
     return {
@@ -126,5 +136,21 @@ export default {
   text-align: center;
   color: #2c3e50;
   margin-top: 60px;
+}
+
+.app-container {
+  display: flex;
+  justify-content: space-between;
+}
+
+.property-tree-pane {
+  flex: 1;
+  padding: 10px;
+  border-right: 1px solid #ccc;
+}
+
+.properties-pane {
+  flex: 1;
+  padding: 10px;
 }
 </style>
